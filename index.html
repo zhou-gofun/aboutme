@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周国放 — Agent架构师 & 全栈开发者</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #FAFAFA;
+            --bg-secondary: #F5F5F5;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B6B6B;
+            --text-muted: #9A9A9A;
+            --accent: #D97757;
+            --accent-light: #E8A88A;
+            --border: #E5E5E5;
+            --border-light: #F0F0F0;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08), 0 12px 32px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 120px 24px 80px;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 60%;
+            height: 80%;
+            background: radial-gradient(ellipse at center, rgba(217, 119, 87, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .hero-content {
+            max-width: 720px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.2s;
+        }
+
+        .hero-label::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.4s;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 560px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.6s;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.8s;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-muted);
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(250, 250, 250, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        nav.scrolled {
+            border-bottom-color: var(--border-light);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .nav-toggle span {
+            width: 22px;
+            height: 1.5px;
+            background: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        /* ===== SECTIONS ===== */
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 24px;
+        }
+
+        .section-header {
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-top: 16px;
+        }
+
+
+        /* ===== ABOUT ===== */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+        .about-text p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .about-text p strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ===== SKILLS ===== */
+        .skills-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 80px 48px;
+            margin: 0 auto;
+            max-width: 1152px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .skill-category {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px;
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .skill-category:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .skill-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(217, 119, 87, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .skill-category h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            font-size: 13px;
+            padding: 6px 14px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .skill-tag:hover {
+            background: rgba(217, 119, 87, 0.1);
+            color: var(--accent);
+        }
+
+        /* ===== PROJECTS ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #ebebeb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover .project-image img {
+            transform: scale(1.04);
+        }
+
+        .project-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.03) 100%);
+        }
+
+        .project-content {
+            padding: 28px;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .project-tag {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(217, 119, 87, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .project-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .project-card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .project-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-arrow {
+            color: var(--accent);
+            gap: 10px;
+        }
+
+        /* ===== EXPERIENCE ===== */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 1.5px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 48px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -36px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            transition: var(--transition);
+        }
+
+        .timeline-item:hover .timeline-dot {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .timeline-date {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .timeline-company {
+            font-size: 15px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .timeline-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .timeline-desc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .timeline-desc li {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 6px;
+        }
+
+        .timeline-desc li::before {
+            content: '\2014';
+            position: absolute;
+            left: 0;
+            color: var(--text-muted);
+        }
+
+        /* ===== PUBLICATIONS ===== */
+        .publication-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: var(--transition);
+        }
+
+        .publication-item:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .publication-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .publication-meta {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ===== OSS / GITEE ===== */
+        .oss-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .oss-image {
+            width: 100%;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== CONTACT ===== */
+        .contact-section {
+            text-align: center;
+            padding: 120px 24px;
+        }
+
+        .contact-section .section-title {
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+
+        .contact-section .section-desc {
+            max-width: 480px;
+            margin: 0 auto 40px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .contact-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            border-top: 1px solid var(--border-light);
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(250, 250, 250, 0.95);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 20px 24px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            section {
+                padding: 60px 20px;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .skills-section {
+                padding: 48px 24px;
+                margin: 0 16px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline {
+                padding-left: 24px;
+            }
+
+            .timeline-dot {
+                left: -28px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">周国放</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about">关于</a></li>
+                <li><a href="#skills">技能</a></li>
+                <li><a href="#projects">项目</a></li>
+                <li><a href="#experience">经历</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="hero-label">Agent 架构师 / Agent 应用工程师</div>
+            <h1>构建<em>智能</em>的<br>Agent 系统与全栈应用</h1>
+            <p class="hero-subtitle">
+                主导多 Agent 协同系统架构设计，深耕医学统计分析平台研发，兼具统计学背景与全栈工程能力。在 AI 应用落地与数据驱动产品间寻找最优解。
+            </p>
+            <div class="hero-cta">
+                <a href="#projects" class="btn btn-primary">
+                    <span>查看项目</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="mailto:772348638@qq.com" class="btn btn-secondary">发送邮件</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- About -->
+    <section id="about">
+        <div class="section-header fade-in">
+            <div class="section-label">关于我</div>
+            <h2 class="section-title">从统计学到 Agent 工程</h2>
+            <p class="section-desc">跨学科背景驱动下的技术探索者，在医学数据、AI 应用与全栈工程之间持续构建连接。</p>
+        </div>
+        <div class="about-grid">
+            <div class="about-text fade-in">
+                <p>
+                    我是<strong>周国放</strong>，毕业于山西大学生物工程专业。从统计学，逐步拓展至全栈开发与 AI 系统架构，现任沿长科技产品研发负责人。
+                </p>
+                <p>
+                    主导 <a href="https://www.spls.cn" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 500;">SPLS 统计分析平台</a>
+                    的技术迭代与新产品研发，包括多 Agent 协同系统 "SPLS 智擎" 的架构设计，以及多个医学文献向量知识库的构建。
+                </p>
+                <p>
+                    技术栈覆盖 <strong>Vue / React / Tauri</strong> 前端、<strong>FastAPI / Django</strong> 后端、
+                    <strong>Python / R</strong> 数据分析，以及 <strong>LangChain / 向量数据库</strong> 等 AI 基础设施。
+                </p>
+            </div>
+            <div class="about-stats fade-in">
+                <div class="stat-card">
+                    <div class="stat-number">4+</div>
+                    <div class="stat-label">年研发经验</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">开发工具数量</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">向量知识库</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">个人项目</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="skills-section">
+        <div class="section-header fade-in">
+            <div class="section-label">技术栈</div>
+            <h2 class="section-title">全栈工程与 AI 能力</h2>
+            <p class="section-desc">覆盖前端交互、后端服务、数据分析与 AI 应用开发的完整技术矩阵。</p>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-category fade-in">
+                <h3>前端与跨端</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Vue（精通）</span>
+                    <span class="skill-tag">React（熟练）</span>
+                    <span class="skill-tag">TS / JS（熟练）</span>
+                    <span class="skill-tag">Tauri</span>
+                    <span class="skill-tag">Next.js</span>
+                </div>
+            </div>
+            <div class="skill-category fade-in">
+                <h3>后端与数据</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">FastAPI（精通）</span>
+                    <span class="skill-tag">Django（精通）</span>
+                    <span class="skill-tag">Flask</span>
+                    <span class="skill-tag">PostgreSQL（熟练）</span>
+                    <span class="skill-tag">MySQL（熟练）</span>
+                    <span class="skill-tag">Redis</span>
+                </div>
+            </div>
+            <div class="skill-category fade-in">
+                <h3>数据分析与 AI</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Python（精通）</span>
+                    <span class="skill-tag">R（精通）</span>
+                    <span class="skill-tag">统计学（熟练）</span>
+                    <span class="skill-tag">LangChain</span>
+                    <span class="skill-tag">FAISS</span>
+                    <span class="skill-tag">ChromaDB</span>
+                </div>
+            </div>
+            <div class="skill-category fade-in">
+                <h3>AI 平台与运维</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Coze</span>
+                    <span class="skill-tag">Dify</span>
+                    <span class="skill-tag">Docker（熟练）</span>
+                    <span class="skill-tag">Nginx</span>
+                    <span class="skill-tag">向量检索</span>
+                    <span class="skill-tag">多 Agent 调度</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+        <div class="section-header fade-in">
+            <div class="section-label">精选项目</div>
+            <h2 class="section-title">从想法到部署</h2>
+            <p class="section-desc">主导设计与实现的关键项目，涵盖知识管理、Agent 系统、跨端应用与数据工具。</p>
+        </div>
+        <div class="projects-grid">
+            <a href="https://www.jetgoose.cn" class="project-card fade-in" target="_blank">
+                <div class="project-image">
+                    <img src="https://mbtest-1257877758.cos.ap-chengdu.myqcloud.com/aboutme/jetgoose.png" alt="JetGoose 截图">
+                </div>
+                <div class="project-content">
+                    <div class="project-meta">
+                        <span class="project-tag">知识管理</span>
+                        <span class="project-tag">Vue + FastAPI</span>
+                    </div>
+                    <h3>JetGoose 知识管理平台</h3>
+                    <p>一站式知识管理平台，除基本文献管理、阅读、笔记、文献解读外，核心亮点是场景识别和 AI 自动编辑笔记功能。平台基于 Vue + FastAPI + PostgreSQL，官网基于 React + FastAPI，Sealos 部署。</p>
+                    <div class="project-arrow">
+                        <span>访问平台</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://www.spls.cn" class="project-card fade-in" target="_blank">
+                <div class="project-image">
+                    <img src="https://mbtest-1257877758.cos.ap-chengdu.myqcloud.com/aboutme/manifold-screenshot-1.png" alt="AI 笔记软件截图">
+                </div>
+                <div class="project-content">
+                    <div class="project-meta">
+                        <span class="project-tag">Tauri</span>
+                        <span class="project-tag">Rust + React</span>
+                    </div>
+                    <h3>AI 笔记软件</h3>
+                    <p>基于 Tauri（React + Rust）的笔记软件，目的是实现大模型接管笔记（知识库）。已实现笔记编辑与文件管理，灵感来自 Obsidian CLI 命令行功能，开发中。</p>
+                    <div class="project-arrow">
+                        <span>开发中</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://github.com/zhou-gofun/pdf-annotation" class="project-card fade-in" target="_blank">
+                <div class="project-image">
+                    <img src="https://mbtest-1257877758.cos.ap-chengdu.myqcloud.com/aboutme/gitee-1.png" alt="PDF 注释工具截图">
+                </div>
+                <div class="project-content">
+                    <div class="project-meta">
+                        <span class="project-tag">PDF.js</span>
+                        <span class="project-tag">Vue</span>
+                    </div>
+                    <h3>PDF 注释工具</h3>
+                    <p>基于 PDF.js + Vue 的 PDF 注释工具，支持文档批注与高亮。灵感来自 B 站开源 React 项目。</p>
+                    <div class="project-arrow">
+                        <span>查看详情</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://github.com/zhou-gofun/agent-center-demo" class="project-card fade-in" target="_blank">
+                <div class="project-image">&#129302;</div>
+                <div class="project-content">
+                    <div class="project-meta">
+                        <span class="project-tag">Agent</span>
+                        <span class="project-tag">多 Agent 协同</span>
+                    </div>
+                    <h3>多 Agent 中心</h3>
+                    <p>可根据业务场景扩展 Agent 和 Skills 的 Agent 协同系统，灵感来自 Anthropic 技术文档。采用主 Agent + 多子 Agent + Skills 的中心化架构。</p>
+                    <div class="project-arrow">
+                        <span>查看详情</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://github.com/zhou-gofun/rag-faiss" class="project-card fade-in" target="_blank">
+                <div class="project-image">&#128172;</div>
+                <div class="project-content">
+                    <div class="project-meta">
+                        <span class="project-tag">LangChain</span>
+                        <span class="project-tag">FAISS</span>
+                    </div>
+                    <h3>中文问答系统 Demo</h3>
+                    <p>自学 sklearn 期间构建的问答系统，基于 LangChain + FAISS 实现文档检索与问答。探索大模型与向量检索结合的早期实践。</p>
+                    <div class="project-arrow">
+                        <span>查看详情</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <div class="project-card fade-in">
+                <div class="project-image">
+                    <img src="https://mbtest-1257877758.cos.ap-chengdu.myqcloud.com/aboutme/%E5%B0%8F%E7%94%B2%E8%AE%B0%E5%8A%A9%E6%89%8B.png" alt="小甲记助手截图">
+                </div>
+                <div class="project-content">
+                    <div class="project-meta">
+                        <span class="project-tag">鸿蒙</span>
+                        <span class="project-tag">数据分析</span>
+                    </div>
+                    <h3>小甲记 App</h3>
+                    <p>甲亢患者健康管理软件（鸿蒙应用），与朋友合作开发。主要负责食物含碘数据库的挖掘和构建以及数据分析部分。</p>
+                    <div class="project-arrow">
+                        <span>查看详情</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Open Source -->
+    <section id="opensource" class="oss-section">
+        <div class="section-header fade-in">
+            <div class="section-label">贡献</div>
+            <h2 class="section-title">持续输出与沉淀</h2>
+            <p class="section-desc">在 Gitee 上的活跃度与项目贡献。</p>
+        </div>
+        <div class="fade-in">
+            <a href="https://gitee.com/THEPASSERBAY" target="_blank">
+                <img src="https://mbtest-1257877758.cos.ap-chengdu.myqcloud.com/aboutme/gitee-1.png" alt="Gitee 贡献度" class="oss-image">
+            </a>
+        </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience">
+        <div class="section-header fade-in">
+            <div class="section-label">职业经历</div>
+            <h2 class="section-title">技术实践与管理经验</h2>
+            <p class="section-desc">从统计学到全栈开发，再到 Agent 系统架构，持续扩展技术边界。</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-header">
+                    <div class="timeline-title">产品研发 / 技术负责人</div>
+                    <div class="timeline-date">2024.06 — 至今</div>
+                </div>
+                <div class="timeline-company">沿长科技（成都）有限公司</div>
+                <div class="timeline-desc">
+                    <ul>
+                        <li>主导 SPLS 平台迭代：约 40 款基础统计工具、14 款自动化全流程、39 款模块化工具、12 款计算工具</li>
+                        <li>设计 SPLS 智擎多 Agent 协同系统：主 Agent + 多子 Agent + Skills 架构，构建 3 个向量知识库</li>
+                        <li>负责团队建设："新质事业部" 从 1 人扩展至 4 人，制定开发规范</li>
+                        <li>AI 赋能：分析报告 AI 解读、智能参数配置、AI 编程规范落地</li>
+                        <li>基础设施：腾讯云弹性伸缩 + 文件系统构建分析节点集群</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-header">
+                    <div class="timeline-title">全栈开发 / 创业</div>
+                    <div class="timeline-date">2023.05 — 2024.05</div>
+                </div>
+                <div class="timeline-company">独立项目（后被沿长科技收购）</div>
+                <div class="timeline-desc">
+                    <ul>
+                        <li>开发数据可视化 + 统计分析网站 anatools.cn（Vue3 + Django + MySQL + R）</li>
+                        <li>Docker 部署，上线 73 个工具的 R 版和 JS 版（ECharts 可视化）</li>
+                        <li>项目被沿长科技收购，更名为 SPLS（www.spls.cn）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-header">
+                    <div class="timeline-title">生物信息学分析</div>
+                    <div class="timeline-date">2022.03 — 2023.04</div>
+                </div>
+                <div class="timeline-company">四川帕诺米克生物科技有限公司</div>
+                <div class="timeline-desc">
+                    <ul>
+                        <li>蛋白产线负责人：LabelFree / TMT / 蛋白磷酸化 / 高级分析，撰写并维护 SOP 与交付规范</li>
+                        <li>自动化改造：蛋白产线数据分析流程自动化</li>
+                        <li>数据库构建：植物蛋白质互作、宏蛋白质互作、COG、物种分类树等</li>
+                        <li>独立开发兼容单样本与多样本比较的蛋白质分析产品</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-header">
+                    <div class="timeline-title">科研 / 学生工作</div>
+                    <div class="timeline-date">2017.12 — 2021.03</div>
+                </div>
+                <div class="timeline-company">山西大学生物技术研究所</div>
+                <div class="timeline-desc">
+                    <ul>
+                        <li>谷糠活性多酚调控 miR-149 重塑结肠癌有氧糖酵解的分子机制（负责人）</li>
+                        <li>发表 Journal of Functional Foods 论文（三作）</li>
+                        <li>第五届中国互联网+大学生创新创业大赛银奖（A 级）</li>
+                        <li>第四届全国大学生生命科学创新创业大赛一等奖（A 级）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications -->
+    <section id="publications">
+        <div class="section-header fade-in">
+            <div class="section-label">学术研究</div>
+            <h2 class="section-title">发表论文</h2>
+        </div>
+        <div class="publication-item fade-in">
+            <div class="publication-title">
+                Bound polyphenol from foxtail millet bran exhibits an antiproliferative activity in HT-29 cell by reprogramming miRNA149-mediated aerobic glycolysis.
+            </div>
+            <div class="publication-meta">Journal of Functional Foods &middot; 第三作者</div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section">
+        <div class="section-header fade-in">
+            <div class="section-label">联系我</div>
+            <h2 class="section-title">一起聊聊 Agent？</h2>
+        </div>
+        <div class="contact-links fade-in">
+            <a href="mailto:772348638@qq.com" class="contact-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+                <span>772348638@qq.com</span>
+            </a>
+            <a href="tel:18282651853" class="contact-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                <span>182-8265-1853</span>
+            </a>
+            <a href="https://github.com/zhou-gofun" class="contact-link" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                    <path d="M9 18c-4.51 2-5-2-7-2" />
+                </svg>
+                <span>GitHub</span>
+            </a>
+            <a href="https://gitee.com/THEPASSERBAY" class="contact-link" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                    <path d="M2 12h20" />
+                </svg>
+                <span>Gitee</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-text">&copy; 2026 周国放. 以可靠的方式构建软件。</div>
+            <div class="footer-links">
+                <a href="#about">关于</a>
+                <a href="#skills">技能</a>
+                <a href="#projects">项目</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile menu
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        navToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => navLinks.classList.remove('active'));
+        });
+
+        // Intersection Observer for fade-in
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
